@@ -6,6 +6,9 @@
 (() => {
   'use strict';
 
+  // Firefox calls the extension API `browser`, Chromium calls it `chrome`.
+  const ext = globalThis.browser ?? chrome;
+
   const SKIP =
     'script, style, noscript, template, textarea, select, option, datalist, code, pre, kbd, samp';
 
@@ -143,8 +146,11 @@
 
   function shadowRootOf(element) {
     try {
-      // Content scripts may also read closed shadow roots.
-      return chrome.dom?.openOrClosedShadowRoot?.(element) ?? element.shadowRoot;
+      // Content scripts may also read closed shadow roots: through a function
+      // in Chromium, through a property in Firefox.
+      return (
+        ext.dom?.openOrClosedShadowRoot?.(element) ?? element.openOrClosedShadowRoot ?? element.shadowRoot
+      );
     } catch {
       return element.shadowRoot;
     }
@@ -252,7 +258,7 @@
     }
     try {
       // Only the popup listens; when it is closed this rejects, which is fine.
-      chrome.runtime.sendMessage({ type: 'year12000:count', count }).catch(() => {});
+      ext.runtime.sendMessage({ type: 'year12000:count', count }).catch(() => {});
     } catch {
       // The extension was reloaded or removed: this script is orphaned.
       observer.disconnect();
@@ -265,19 +271,19 @@
     reportTimer = setTimeout(report, 150);
   }
 
-  chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+  ext.runtime.onMessage.addListener((message, _sender, sendResponse) => {
     if (message?.type !== 'year12000:report') return;
     sendResponse({ ok: true });
     report();
   });
 
-  chrome.storage.onChanged.addListener((changes, area) => {
+  ext.storage.onChanged.addListener((changes, area) => {
     if (area !== 'local' || !changes.enabled) return;
     if (changes.enabled.newValue === false) disable();
     else enable();
   });
 
-  chrome.storage.local.get({ enabled: true }).then((settings) => {
+  ext.storage.local.get({ enabled: true }).then((settings) => {
     if (settings.enabled) enable();
   });
 })();

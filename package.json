@@ -7,6 +7,8 @@
     "test": "npm run test:unit && npm run test:e2e",
     "test:unit": "node --test \"test/unit/*.test.js\"",
     "test:e2e": "playwright test",
+    "test:firefox": "node --test \"test/firefox/*.test.js\"",
+    "lint:firefox": "node scripts/package.js firefox && web-ext lint --source-dir dist/firefox",
     "corpus": "node scripts/corpus-report.js",
     "package": "node scripts/package.js",
     "version": "node scripts/sync-version.js && git add manifest.json",
@@ -15,6 +17,8 @@
     "store-assets": "node scripts/build-store-assets.js"
   },
   "devDependencies": {
-    "@playwright/test": "^1.56.0"
+    "@playwright/test": "^1.56.0",
+    "selenium-webdriver": "^4.52.0",
+    "web-ext": "^10.8.0"
   }
 }

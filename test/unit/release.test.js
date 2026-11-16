@@ -16,12 +16,12 @@ describe('versions', () => {
   });
 });
 
-describe('package', () => {
-  const zip = path.join(root, execFileSync('node', ['scripts/package.js'], { cwd: root, encoding: 'utf8' }).trim());
+describe('Chrome package', () => {
+  const zip = path.join(root, execFileSync('node', ['scripts/package.js', 'chrome'], { cwd: root, encoding: 'utf8' }).trim());
   const entries = execFileSync('unzip', ['-Z1', zip], { encoding: 'utf8' }).trim().split('\n').sort();
 
   test('is named after the manifest version', () => {
-    assert.equal(path.basename(zip), `year-12000-${manifest.version}.zip`);
+    assert.equal(path.basename(zip), `year-12000-${manifest.version}-chrome.zip`);
   });
 
   test('contains exactly the runtime files', () => {
@@ -50,6 +50,43 @@ describe('package', () => {
       ...[...popup.matchAll(/(?:src|href)="([^"]+)"/g)].map((match) => match[1]),
     ];
     for (const file of referenced) assert.ok(entries.includes(file), `${file} is not packaged`);
+  });
+});
+
+describe('Firefox package', () => {
+  const zip = path.join(
+    root,
+    execFileSync('node', ['scripts/package.js', 'firefox'], { cwd: root, encoding: 'utf8' }).trim(),
+  );
+  const packaged = JSON.parse(execFileSync('unzip', ['-p', zip, 'manifest.json'], { encoding: 'utf8' }));
+
+  test('is named after the manifest version', () => {
+    assert.equal(path.basename(zip), `year-12000-${manifest.version}-firefox.zip`);
+  });
+
+  test('contains the same files as the Chrome package', () => {
+    const list = (file) => execFileSync('unzip', ['-Z1', file], { encoding: 'utf8' }).trim().split('\n').sort();
+    assert.deepEqual(list(zip), list(zip.replace('-firefox.zip', '-chrome.zip')));
+  });
+
+  test('adds only the Firefox settings to the manifest', () => {
+    const { browser_specific_settings: settings, ...rest } = packaged;
+    assert.deepEqual(rest, manifest);
+    assert.deepEqual(settings, {
+      gecko: {
+        id: '@year-12000.c2r0b',
+        strict_min_version: '140.0',
+        data_collection_permissions: { required: ['none'] },
+      },
+    });
+  });
+
+  test('the source manifest stays free of browser-specific keys', () => {
+    assert.equal(manifest.browser_specific_settings, undefined);
+  });
+
+  test('rejects unknown targets', () => {
+    assert.throws(() => execFileSync('node', ['scripts/package.js', 'safari'], { cwd: root, stdio: 'pipe' }));
   });
 });
 

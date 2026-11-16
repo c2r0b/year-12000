@@ -1,8 +1,9 @@
 name: Release
 
-# Pushing a version tag (v1.2.3) tests, packages and submits the extension to
-# the Chrome Web Store, then creates a GitHub release with the same zip.
-# Running it by hand only checks that the store credentials work.
+# Pushing a version tag (v1.2.3) tests and packages the extension, submits it
+# to the Chrome Web Store and to Firefox Add-ons, then creates a GitHub release
+# with both packages. Running it by hand only checks that the store
+# credentials work.
 on:
   push:
     tags: ['v*']
@@ -16,13 +17,10 @@ permissions:
   contents: read
 
 jobs:
-  tests:
-    name: Tests
-    if: github.event_name == 'push'
-    uses: ./.github/workflows/tests.yml
+  # --- Manual run: check credentials, publish nothing --------------------------
 
-  check:
-    name: Check store credentials
+  check-chrome:
+    name: Check Chrome Web Store credentials
     if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     environment: chrome-web-store
@@ -37,19 +35,37 @@ jobs:
           CWS_EXTENSION_ID: ${{ vars.CWS_EXTENSION_ID }}
           CWS_SERVICE_ACCOUNT_KEY: ${{ secrets.CWS_SERVICE_ACCOUNT_KEY }}
 
-  publish:
-    name: Publish
-    needs: tests
+  check-firefox:
+    name: Check Firefox Add-ons credentials
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
-    environment: chrome-web-store
-    permissions:
-      contents: write # to create the GitHub release
+    environment: firefox-add-ons
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - run: node scripts/firefox-add-ons.js status
+        env:
+          WEB_EXT_API_KEY: ${{ secrets.AMO_JWT_ISSUER }}
+          WEB_EXT_API_SECRET: ${{ secrets.AMO_JWT_SECRET }}
 
+  # --- Tag: test, package, publish ---------------------------------------------
+
+  tests:
+    name: Tests
+    if: github.event_name == 'push'
+    uses: ./.github/workflows/tests.yml
+
+  package:
+    name: Package
+    needs: tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
       - name: Check that the tag matches the manifest
         run: |
           version="$(node -p "require('./manifest.json').version")"
@@ -57,19 +73,65 @@ jobs:
             echo "::error::Tag $GITHUB_REF_NAME does not match manifest version $version"
             exit 1
           fi
+      - run: node scripts/package.js
+      - uses: actions/upload-artifact@v4
+        with:
+          name: packages
+          path: dist/*.zip
+          if-no-files-found: error
 
-      - name: Package
-        id: package
-        run: echo "zip=$(node scripts/package.js)" >> "$GITHUB_OUTPUT"
-
-      - name: Submit to the Chrome Web Store
-        run: node scripts/chrome-web-store.js publish "${{ steps.package.outputs.zip }}"
+  chrome:
+    name: Chrome Web Store
+    needs: package
+    runs-on: ubuntu-latest
+    environment: chrome-web-store
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/download-artifact@v4
+        with:
+          name: packages
+          path: dist
+      - run: node scripts/chrome-web-store.js publish dist/*-chrome.zip
         env:
           CWS_PUBLISHER_ID: ${{ vars.CWS_PUBLISHER_ID }}
           CWS_EXTENSION_ID: ${{ vars.CWS_EXTENSION_ID }}
           CWS_SERVICE_ACCOUNT_KEY: ${{ secrets.CWS_SERVICE_ACCOUNT_KEY }}
 
-      - name: Create the GitHub release
-        run: gh release create "$GITHUB_REF_NAME" "${{ steps.package.outputs.zip }}" --generate-notes --verify-tag
+  firefox:
+    name: Firefox Add-ons
+    needs: package
+    runs-on: ubuntu-latest
+    environment: firefox-add-ons
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      # web-ext uploads a folder, so rebuild it: same code as the zip above.
+      - run: node scripts/package.js firefox
+      # Submits the version for review and returns without waiting for it.
+      - run: npx web-ext sign --channel listed --source-dir dist/firefox --approval-timeout 0
+        env:
+          WEB_EXT_API_KEY: ${{ secrets.AMO_JWT_ISSUER }}
+          WEB_EXT_API_SECRET: ${{ secrets.AMO_JWT_SECRET }}
+
+  github-release:
+    name: GitHub release
+    needs: package
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: packages
+          path: dist
+      - run: gh release create "$GITHUB_REF_NAME" dist/*.zip --generate-notes --verify-tag
         env:
           GH_TOKEN: ${{ github.token }}

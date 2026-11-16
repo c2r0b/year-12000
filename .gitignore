@@ -4,3 +4,4 @@ playwright-report/
 .claude/
 .DS_Store
 dist/
+web-ext-artifacts/

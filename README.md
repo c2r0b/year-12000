@@ -9,6 +9,7 @@
 [![Tests](https://github.com/c2r0b/year-12000/actions/workflows/tests.yml/badge.svg)](https://github.com/c2r0b/year-12000/actions/workflows/tests.yml)
 ![Manifest V3](https://img.shields.io/badge/Manifest-V3-0b8fd6)
 ![Chromium browsers](https://img.shields.io/badge/Chromium-Chrome%20%C2%B7%20Edge%20%C2%B7%20Brave-0b8fd6?logo=googlechrome&logoColor=white)
+![Firefox](https://img.shields.io/badge/Firefox-140%2B-0b8fd6?logo=firefoxbrowser&logoColor=white)
 ![No runtime dependencies](https://img.shields.io/badge/runtime%20dependencies-0-12924a)
 ![No tracking](https://img.shields.io/badge/data%20collected-none-12924a)
 ![Human Era](https://img.shields.io/badge/Human%20Era-12%2C026-4fd67a)
@@ -49,13 +50,22 @@ This project is in part a tribute to [Kurzgesagt – In a Nutshell](https://www.
 
 ## Install
 
-The extension is not on the Chrome Web Store yet. To load it from source:
+The extension is not in the browser stores yet. To load it from source, download or clone this repository, then:
 
-1. Download or clone this repository.
-2. Open `chrome://extensions` (or the equivalent page in Edge, Brave, Vivaldi, Opera, Arc).
-3. Turn on **Developer mode**.
-4. Click **Load unpacked** and select this folder.
-5. Reload the tabs that were already open.
+**Chrome, Edge, Brave and other Chromium browsers**
+
+1. Open `chrome://extensions` (or the equivalent page).
+2. Turn on **Developer mode**.
+3. Click **Load unpacked** and select this folder.
+4. Reload the tabs that were already open.
+
+**Firefox** (140 or later)
+
+1. Run `npm run package` to build `dist/firefox/`.
+2. Open `about:debugging#/runtime/this-firefox`.
+3. Click **Load Temporary Add-on…** and select `dist/firefox/manifest.json`.
+
+A temporary add-on is removed when Firefox closes.
 
 ## How dates are recognised
 
@@ -107,7 +117,7 @@ Take the figure for what it is: encyclopedia prose is friendly ground, because m
 
 ## Development
 
-The extension has no build step: the browser loads the files as they are. Node.js is only needed for the tests and for rendering the images.
+The extension has no build step: Chromium loads the files as they are, and the Firefox package is the same files with a few extra manifest settings. Node.js is only needed for packaging, the tests and rendering the images.
 
 ```sh
 npm install
@@ -119,8 +129,10 @@ npx playwright install chromium
 | `npm test` | Runs both test suites |
 | `npm run test:unit` | Tests the date rules in Node, including the corpus thresholds |
 | `npm run test:e2e` | Tests the real extension in Chromium, via Playwright |
+| `npm run test:firefox` | Tests the packaged extension in Firefox, via Selenium |
+| `npm run lint:firefox` | Checks the Firefox package with Mozilla's linter |
 | `npm run corpus` | Prints accuracy on the labelled corpus, with every miss |
-| `npm run package` | Builds the Chrome Web Store zip in `dist/` |
+| `npm run package` | Builds the Chrome and Firefox packages in `dist/` |
 | `npm run icons` | Re-renders the PNG icons from `icons/icon.svg` |
 | `npm run screenshots` | Retakes the README screenshots from the running extension |
 
@@ -133,9 +145,16 @@ npm version patch   # or minor / major: bumps package.json and manifest.json, co
 git push --follow-tags
 ```
 
-The tag starts the [release workflow](.github/workflows/release.yml): it runs the tests, builds the zip with only the runtime files, submits it to the Chrome Web Store for review and attaches the same zip to a GitHub release. `npm run package` builds that zip locally in `dist/`.
+The tag starts the [release workflow](.github/workflows/release.yml): it runs the tests, builds the two packages with only the runtime files, submits them to the Chrome Web Store and to Firefox Add-ons for review, and attaches both to a GitHub release. The code is the same in both packages; the Firefox one only adds the settings Firefox requires to its manifest.
 
-The workflow needs a GitHub environment named `chrome-web-store` with the variables `CWS_PUBLISHER_ID` and `CWS_EXTENSION_ID` and the secret `CWS_SERVICE_ACCOUNT_KEY` (the JSON key of the Google service account added to the publisher account). Running the workflow by hand from the Actions tab only checks that these credentials work.
+The workflow needs two GitHub environments:
+
+| Environment | Settings |
+| --- | --- |
+| `chrome-web-store` | Variables `CWS_PUBLISHER_ID` and `CWS_EXTENSION_ID`; secret `CWS_SERVICE_ACCOUNT_KEY` (the JSON key of the Google service account added to the publisher account) |
+| `firefox-add-ons` | Secrets `AMO_JWT_ISSUER` and `AMO_JWT_SECRET`, from [addons.mozilla.org](https://addons.mozilla.org/developers/addon/api/key/) |
+
+Running the workflow by hand from the Actions tab only checks that these credentials work.
 
 ### Project layout
 
@@ -152,6 +171,7 @@ The workflow needs a GitHub environment named `chrome-web-store` with the variab
 | `test/unit/` | Tests for the date rules |
 | `test/corpus/` | Labelled real-world text and its scoring |
 | `test/e2e/` | Tests that load the extension in Chromium |
+| `test/firefox/` | Tests that load the extension in Firefox |
 
 ## Contributing
 

@@ -45,3 +45,17 @@ jobs:
             playwright-report/
             test-results/
           retention-days: 7
+
+  firefox:
+    name: Firefox tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run lint:firefox
+      - run: npm run test:firefox
