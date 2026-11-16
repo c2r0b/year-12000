@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Form</title>
+  </head>
+  <body>
+    <form id="form" method="get" action="/submitted.html">
+      <label id="label" for="date">Departure on 2026-11-16</label>
+      <input id="date" name="date" type="date" value="2026-11-16" />
+      <input id="text" name="text" type="text" value="in 2026" placeholder="e.g. 2026-11-16" />
+      <input name="hidden" type="hidden" value="2026-11-16" />
+      <textarea id="textarea" name="textarea">November 16, 2026</textarea>
+      <select id="select" name="select">
+        <option>2025</option>
+        <option selected>2026</option>
+        <option>2027</option>
+      </select>
+      <input id="list" name="list" list="years" value="2026" />
+      <datalist id="years">
+        <option>2026</option>
+      </datalist>
+      <button id="submit" type="submit" name="button" value="2026">Send</button>
+    </form>
+    <div id="editable" contenteditable="true">Edited in 2026</div>
+    <p id="plain">Edited in 2026</p>
+  </body>
+</html>

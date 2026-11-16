@@ -1,0 +1,15 @@
+# Source: https://fr.wikipedia.org/wiki/Chamonix-Mont-Blanc
+# License: CC BY-SA 4.0, text by Wikipedia contributors
+# Labels: reviewed
+
+Chamonix-Mont-Blanc (prononcé [ ʃa.mɔ.ˈni mɔ̃ blɑ̃]) ou Chamonix dans la forme abrégée, voire Cham' dans la forme locale familière, est une commune française de montagne située dans le département de la Haute-Savoie, en région Auvergne-Rhône-Alpes. La commune de Chamonix-Mont-Blanc recouvre du nord au sud seize villages ou hameaux : le Tour, Montroc, le Planet, Argentière, les Chosalets, la Joux, le Lavancher, les Tines, les Bois, les Praz de Chamonix, Chamonix-Mont-Blanc, les Pècles, les Mouilles, les Barrats, les Pélerins, les Gaillands, les Bossons.
+
+Chamonix entre dans l'histoire en {1091}, lorsque le comte Aymon Ier de Genève fait dotation de la vallée à l'abbaye Saint-Michel-de-la-Cluse, en Piémont. Des moines s'installent sur la rive droite de l'Arve. C'est la naissance du prieuré de Chamonix. La commune est un territoire du duché de Savoie qui fait partie des États de Savoie, eux-mêmes intégrés par la suite au royaume de Sardaigne. Puis sous la Révolution française et le Premier Empire, elle devient un territoire français. Le 24 mars {1860}, par le traité de Turin, le duché de Savoie est cédé à la France. Le 4 avril {1860}, la commune de Chamonix devient alors définitivement française. Elle prend le nom de Chamonix-Mont-Blanc le 14 novembre {1921}.
+
+Enserrée entre les massifs montagneux des aiguilles Rouges et du Mont-Blanc, Chamonix-Mont-Blanc partage avec Saint-Gervais-les-Bains et Saint-Véran (Hautes-Alpes) le record de la commune ayant l'altitude la plus haute de France et d'Europe occidentale (ce point fait l'objet d'une discussion transfrontalière avec l'Italie. Il n'est pas réglé à ce jour du point de vue du droit international). Elle le doit à la présence sur son territoire du sommet le plus haut des Alpes : le mont Blanc qui culmine à 4 807 mètres. La commune est très prisée des amateurs d'alpinisme et de sports de montagne en général. L'attrait touristique du mont Blanc confère un visage très cosmopolite à la ville.
+
+La commune se situe dans la partie septentrionale et occidentale des Alpes, elle s'est développée dans la vallée du même nom, au nord des Alpes, proche du point de concorde de frontière de la France, la Suisse et l'Italie.
+
+La vallée de Chamonix s'étend sur une étendue d'environ 17 km de long. La commune de Chamonix-Mont-Blanc est limitrophe des communes françaises Les Houches, Passy, Saint-Gervais-les-Bains, Servoz et Vallorcine ; frontalière avec la Suisse et l'Italie, elle est limitrophe des communes suisses de Trient et d'Orsières dans le canton du Valais, et de la commune italienne de Courmayeur, en vallée d'Aoste, à laquelle elle est reliée par le tunnel du Mont-Blanc.
+
+La superficie de la commune est de 245,5 km², ce qui en fait la plus étendue de Haute-Savoie, mais la surface retenue par l'INSEE est de  11 653 hectares, car les glaciers de plus de 1 km² sont exclus de ce calcul ; son altitude varie de 995  à   4 807 mètres.

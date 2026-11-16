@@ -1,0 +1,75 @@
+name: Release
+
+# Pushing a version tag (v1.2.3) tests, packages and submits the extension to
+# the Chrome Web Store, then creates a GitHub release with the same zip.
+# Running it by hand only checks that the store credentials work.
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    name: Tests
+    if: github.event_name == 'push'
+    uses: ./.github/workflows/tests.yml
+
+  check:
+    name: Check store credentials
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    environment: chrome-web-store
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node scripts/chrome-web-store.js status
+        env:
+          CWS_PUBLISHER_ID: ${{ vars.CWS_PUBLISHER_ID }}
+          CWS_EXTENSION_ID: ${{ vars.CWS_EXTENSION_ID }}
+          CWS_SERVICE_ACCOUNT_KEY: ${{ secrets.CWS_SERVICE_ACCOUNT_KEY }}
+
+  publish:
+    name: Publish
+    needs: tests
+    runs-on: ubuntu-latest
+    environment: chrome-web-store
+    permissions:
+      contents: write # to create the GitHub release
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Check that the tag matches the manifest
+        run: |
+          version="$(node -p "require('./manifest.json').version")"
+          if [ "v$version" != "$GITHUB_REF_NAME" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME does not match manifest version $version"
+            exit 1
+          fi
+
+      - name: Package
+        id: package
+        run: echo "zip=$(node scripts/package.js)" >> "$GITHUB_OUTPUT"
+
+      - name: Submit to the Chrome Web Store
+        run: node scripts/chrome-web-store.js publish "${{ steps.package.outputs.zip }}"
+        env:
+          CWS_PUBLISHER_ID: ${{ vars.CWS_PUBLISHER_ID }}
+          CWS_EXTENSION_ID: ${{ vars.CWS_EXTENSION_ID }}
+          CWS_SERVICE_ACCOUNT_KEY: ${{ secrets.CWS_SERVICE_ACCOUNT_KEY }}
+
+      - name: Create the GitHub release
+        run: gh release create "$GITHUB_REF_NAME" "${{ steps.package.outputs.zip }}" --generate-notes --verify-tag
+        env:
+          GH_TOKEN: ${{ github.token }}

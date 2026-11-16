@@ -1,0 +1,20 @@
+{
+  "name": "year-12000",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Browser extension that shows every date on the web in the Human Era.",
+  "scripts": {
+    "test": "npm run test:unit && npm run test:e2e",
+    "test:unit": "node --test \"test/unit/*.test.js\"",
+    "test:e2e": "playwright test",
+    "corpus": "node scripts/corpus-report.js",
+    "package": "node scripts/package.js",
+    "version": "node scripts/sync-version.js && git add manifest.json",
+    "icons": "node scripts/build-icons.js",
+    "screenshots": "node scripts/build-screenshots.js",
+    "store-assets": "node scripts/build-store-assets.js"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.56.0"
+  }
+}

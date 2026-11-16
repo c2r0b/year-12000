@@ -1,0 +1,9 @@
+# Source: https://es.wikipedia.org/wiki/Universidad_de_Salamanca
+# License: CC BY-SA 4.0, text by Wikipedia contributors
+# Labels: reviewed
+
+La Universidad de Salamanca (en latín, Universitas Studii Salmanticensis o Universitas Studii Salamantini) es una universidad pública española con sede en la ciudad de Salamanca, en cuyo municipio se ubican la mayoría de sus centros, aunque también posee centros en las ciudades de Zamora, Ávila, Béjar y en la localidad de Villamayor. Es la universidad más antigua en operación de España y del mundo hispánico y la cuarta más antigua de Europa.
+
+El Studium Generale, germen de la universidad, instituido en {1218} por Alfonso IX de León, fue el segundo más antiguo de España, tras su homólogo palentino —fundado entre {1208} y {1214}—. Fue la primera institución educativa europea en obtener el título propiamente de Universidad, por la real cédula de Alfonso X el Sabio fechada el 9 de noviembre de {1252}, posteriormente ratificada por la licentia ubique docendi de Alejandro IV en el año {1255}.​​
+
+Su origen, como la mayoría de las universidades medievales europeas, fueron unas escuelas catedralicias cuya existencia documentada se remonta al menos al año {1174}, cuando su maestrescuela aparece recogido en unos documentos de concordia entre la diócesis salmantina y la de Ciudad Rodrigo, firmados ante el arzobispo de Santiago.​​ Este hecho presupone que la creación del cargo de maestrescuela de las escuelas catedralicias tuvo lugar en el siglo XII, ya sea en el reinado de Fernando II de León o en el de su predecesor Alfonso VII.

@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Shadow</title>
+  </head>
+  <body>
+    <p id="light">Light DOM, 2026-11-16.</p>
+    <div id="open-host"></div>
+    <div id="closed-host"></div>
+    <div id="outer-host"></div>
+    <late-element id="late-host"></late-element>
+    <script>
+      document.getElementById('open-host').attachShadow({ mode: 'open' }).innerHTML =
+        '<p id="open">Open since 2026-11-16</p><input id="field" value="2026-11-16" />';
+
+      window.closedRoot = document.getElementById('closed-host').attachShadow({ mode: 'closed' });
+      window.closedRoot.innerHTML = '<p id="closed">Closed since 2027-01-02</p>';
+
+      const outer = document.getElementById('outer-host').attachShadow({ mode: 'open' });
+      outer.innerHTML = '<div id="inner-host"></div>';
+      outer.getElementById('inner-host').attachShadow({ mode: 'open' }).innerHTML =
+        '<p id="nested">Nested in 2028</p>';
+
+      // A component whose code arrives after the page has loaded.
+      setTimeout(() => {
+        customElements.define(
+          'late-element',
+          class extends HTMLElement {
+            constructor() {
+              super();
+              this.attachShadow({ mode: 'open' }).innerHTML = '<p id="late">Late in 2029</p>';
+            }
+          },
+        );
+      }, 1500);
+    </script>
+  </body>
+</html>
