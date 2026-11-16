@@ -2,6 +2,7 @@
   "name": "year-12000",
   "version": "1.0.0",
   "private": true,
+  "license": "0BSD",
   "description": "Browser extension that shows every date on the web in the Human Era.",
   "scripts": {
     "test": "npm run test:unit && npm run test:e2e",

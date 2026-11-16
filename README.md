@@ -12,6 +12,7 @@
 ![Firefox](https://img.shields.io/badge/Firefox-140%2B-0b8fd6?logo=firefoxbrowser&logoColor=white)
 ![No runtime dependencies](https://img.shields.io/badge/runtime%20dependencies-0-12924a)
 ![No tracking](https://img.shields.io/badge/data%20collected-none-12924a)
+[![Licence: 0BSD](https://img.shields.io/badge/licence-0BSD-12924a)](LICENSE)
 ![Human Era](https://img.shields.io/badge/Human%20Era-12%2C026-4fd67a)
 
 [Why](#why) · [Features](#features) · [Install](#install) · [How it works](#how-dates-are-recognised) · [Development](#development)
@@ -181,3 +182,9 @@ Issues and pull requests are welcome. The most useful reports are short snippets
 
 - [Kurzgesagt – In a Nutshell](https://www.youtube.com/@kurzgesagt), for the video and the calendars that inspired this.
 - Cesare Emiliani, who proposed the Holocene calendar in 1993.
+
+## Licence
+
+[BSD Zero Clause](LICENSE): use, copy, modify and distribute it for any purpose, with no conditions and no attribution required.
+
+The one exception is the text in [`test/corpus`](test/corpus), which comes from Wikipedia and stays under CC BY-SA 4.0. It is test data and is not part of the extension.
